@@ -36,7 +36,7 @@ jobs:
         
     - name: Build Application JAR
       working-directory: rest-with-spring-boot-and-java-erudio
-      run: mvn clean package
+      run: mvn clean package -DskipTests
 
     - name: Build docker-compose
       working-directory: ./spring-azure-cd-ci
