@@ -39,7 +39,7 @@ jobs:
       run: mvn clean package -DskipTests
 
     - name: Build docker-compose
-      working-directory: ./spring-azure-cd-ci
+      working-directory: .
       run: docker compose build
 
     - name: Push to Dockerhub
