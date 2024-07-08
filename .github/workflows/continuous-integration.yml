@@ -42,6 +42,13 @@ jobs:
       working-directory: .
       run: docker compose build
 
+    - name: Push to Dockerhub
+      run: |
+        docker tag ${{ secrets.IMAGE_NAME }}:latest ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot-erudio:${{ github.run_id }}
+
+        docker push ${{ secrets.IMAGE_NAME }}:${{ github.run_id }}
+        docker push ${{ secrets.IMAGE_NAME }}:latest
+
     - name: Azure Container Registry Login
       uses: Azure/docker-login@v1
       with:
@@ -56,10 +63,16 @@ jobs:
 
         docker tag ${{ secrets.IMAGE_NAME }}:latest ${{ secrets.AZURE_CONTAINER_REGISTRY }}/rest-with-spring-boot-erudio:${{ github.run_id }}
         docker push ${{ secrets.AZURE_CONTAINER_REGISTRY }}/rest-with-spring-boot-erudio:${{ github.run_id }}
-      
-    - name: Push to Dockerhub
-      run: |
-        docker tag ${{ secrets.IMAGE_NAME }}:latest ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot-erudio:${{ github.run_id }}
 
-        docker push ${{ secrets.IMAGE_NAME }}:${{ github.run_id }}
-        docker push ${{ secrets.IMAGE_NAME }}:latest
+    - name: Azure Login
+      uses: Azure/login@v2.1.0
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+
+    - name: Azure WebApp Container - App Deployment
+      uses: Azure/webapps-deploy@v3.0.1
+      with:
+        # Name of the Azure Web App
+        app-name: erudio-api-server
+        images: ${{ secrets.AZURE_CONTAINER_REGISTRY }}/rest-with-spring-boot-erudio:${{ github.run_id }}
