@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder.Secret
 
 @SpringBootApplication
 public class Startup {
-//test commit
     public static void main(String[] args) {
         SpringApplication.run(Startup.class, args);
         
